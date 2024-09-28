@@ -1,11 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
-<<<<<<< HEAD
 from pymongo import MongoClient
-=======
 import re
->>>>>>> 520e0f1816543e758aa80c639dbdecbc33bf4bdf
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -45,7 +42,6 @@ def calculate():
     data = request.json
     expression = data.get('expression', '')
 
-<<<<<<< HEAD
     if not expression:
         return jsonify({"error": "No expression provided"}), 400
 
@@ -80,11 +76,9 @@ def calculate():
         return jsonify({"result": result}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-=======
     # Evaluate the expression and return the result
     result = evaluate_expression(expression)
     return jsonify({"result": result})
->>>>>>> 520e0f1816543e758aa80c639dbdecbc33bf4bdf
 
 if __name__ == '__main__':
     app.run(debug=True)
