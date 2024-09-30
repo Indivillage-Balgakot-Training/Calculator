@@ -46,12 +46,19 @@ def calculate():
         result = eval(expression, {"__builtins__": None}, allowed_names)
 
         # Store the expression and result in MongoDB
+
         collection.insert_one({"expression": expression, "result": result, "error": None})
 
         return jsonify({"result": result}), 200
     
     except Exception as e:
         collection.insert_one({"expression": expression, "result": None, "error": str(e)})
+
+        collection.insert_one({"expression": expression, "result": result})
+
+        return jsonify({"result": result}), 200
+    except Exception as e:
+
         return jsonify({"error": str(e)}), 400
 
 @app.route('/api/logs', methods=['GET'])
