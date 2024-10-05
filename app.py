@@ -2,11 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
 from pymongo import MongoClient
-<<<<<<< HEAD
-=======
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
->>>>>>> bcaa675eb1a6a1824d828ad55ef36a77ff9c084f
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -55,23 +54,22 @@ def calculate():
         result = eval(expression, {"_builtins_": None}, allowed_names)
 
         # Store the expression and result in MongoDB
-<<<<<<< HEAD
-=======
+
         logs_collection.insert_one({"expression": expression, "result": result, "error": None})
->>>>>>> bcaa675eb1a6a1824d828ad55ef36a77ff9c084f
+
         collection.insert_one({"expression": expression, "result": result, "error": None})
 
         return jsonify({"result": result}), 200
 
     except Exception as e:
         # Log the error to MongoDB
-<<<<<<< HEAD
+
         collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-=======
+
         logs_collection.insert_one({"expression": expression, "result": None, "error": str(e)})
         collection.insert_one({"expression": expression, "result": None, "error": str(e)})
 
->>>>>>> bcaa675eb1a6a1824d828ad55ef36a77ff9c084f
+
         return jsonify({"error": str(e)}), 400
 
 @app.route('/api/logs', methods=['GET'])
