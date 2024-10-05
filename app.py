@@ -2,17 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
 from pymongo import MongoClient
-<<<<<<< HEAD
 from werkzeug.security import generate_password_hash, check_password_hash
 
-=======
-
-
-
-from werkzeug.security import generate_password_hash, check_password_hash
-
-
->>>>>>> b6ecd042fbe7fa76b91ace7ede978c533bc1d34b
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
@@ -22,7 +13,6 @@ db = client['Dev_training']  # Your database name
 users_collection = db['users']  # Collection to store user accounts
 logs_collection = db['logs']  # Collection to store login attempts
 
-<<<<<<< HEAD
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -63,15 +53,6 @@ def login():
     # Log failed login attempt
     logs_collection.insert_one({"username": username, "status": "failed"})
     return jsonify({'success': False}), 401
-=======
-
-
-# User database simulation
-users = {
-   'user': 'password'  # Replace with your desired username: password pair
-}
->>>>>>> b6ecd042fbe7fa76b91ace7ede978c533bc1d34b
-
 
 @app.route('/api/calculate', methods=['POST'])
 def calculate():
@@ -103,45 +84,15 @@ def calculate():
                                .replace('²', '**2') \
                                .replace('^', '**')
 
-<<<<<<< HEAD
         result = eval(expression, {"__builtins__": None}, allowed_names)
 
         # Store the expression and result in MongoDB
         logs_collection.insert_one({"expression": expression, "result": result, "error": None})
-=======
-        expression = expression.replace('^', '**')  
-        
-        result = eval(expression, {"__builtins__": None}, allowed_names)
-
-        # Store the expression and result in MongoDB
-
-
-
-        logs_collection.insert_one({"expression": expression, "result": result, "error": None})
-
-
-        collection.insert_one({"expression": expression, "result": result, "error": None})
->>>>>>> b6ecd042fbe7fa76b91ace7ede978c533bc1d34b
 
         return jsonify({"result": result}), 200
 
     except Exception as e:
-<<<<<<< HEAD
         logs_collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-=======
-        # Log the error to MongoDB
-
-        collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-
-
-        collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-
-        logs_collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-        collection.insert_one({"expression": expression, "result": None, "error": str(e)})
-
-
-
->>>>>>> b6ecd042fbe7fa76b91ace7ede978c533bc1d34b
         return jsonify({"error": str(e)}), 400
 
 @app.route('/api/logs', methods=['GET'])
