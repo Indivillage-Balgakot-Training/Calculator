@@ -3,6 +3,11 @@ from flask_cors import CORS
 import math
 from pymongo import MongoClient
 
+
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
@@ -10,6 +15,14 @@ CORS(app)  # Enable CORS for all routes
 client = MongoClient('mongodb+srv://Balgakot_app_training:SBhQqTzY7Go7sEXJ@validationapp.63rbg.mongodb.net/Dev_training?retryWrites=true&w=majority')
 db = client['Dev_training']  # Your database name
 collection = db['logs']  # Your collection name
+
+
+
+# User database simulation
+users = {
+   'user': 'password'  # Replace with your desired username: password pair
+}
+
 
 @app.route('/api/calculate', methods=['POST'])
 def calculate():
@@ -45,13 +58,29 @@ def calculate():
         result = eval(expression, {"__builtins__": None}, allowed_names)
 
         # Store the expression and result in MongoDB
+
+
+
+        logs_collection.insert_one({"expression": expression, "result": result, "error": None})
+
+
         collection.insert_one({"expression": expression, "result": result, "error": None})
 
         return jsonify({"result": result}), 200
 
     except Exception as e:
         # Log the error to MongoDB
+
         collection.insert_one({"expression": expression, "result": None, "error": str(e)})
+
+
+        collection.insert_one({"expression": expression, "result": None, "error": str(e)})
+
+        logs_collection.insert_one({"expression": expression, "result": None, "error": str(e)})
+        collection.insert_one({"expression": expression, "result": None, "error": str(e)})
+
+
+
         return jsonify({"error": str(e)}), 400
 
 @app.route('/api/logs', methods=['GET'])
@@ -61,6 +90,16 @@ def get_logs():
         return jsonify(logs), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if username in users and users[username] == password:
+        return jsonify({'success': True}), 200
+    return jsonify({'success': False}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
