@@ -22,7 +22,12 @@ def register():
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
 
-    if users_collection.find_one({"username": username}):
+    if len(username) < 3 or len(password) < 8:
+        return jsonify({"error": "Username must be at least 3 characters and password must be at least 8 characters long."}), 400
+
+    # Check for unique username (case insensitive)
+    existing_user = users_collection.find_one({"username": {"$regex": f'^{username}$', "$options": "i"}})
+    if existing_user:
         return jsonify({"error": "User already exists"}), 400
 
     hashed_password = generate_password_hash(password)
@@ -45,7 +50,7 @@ def login():
     if user and check_password_hash(user['password'], password):
         return jsonify({'success': True}), 200
     
-    return jsonify({'success': False}), 401
+    return jsonify({'error': 'Invalid username or password'}), 401
 
 @app.route('/api/calculate', methods=['POST'])
 def calculate():
